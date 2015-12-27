@@ -31,6 +31,13 @@ do
     echo "file 'recap/out_$j.mkv'" >> list.txt
   done
   echo "file 'series/out_$[ i ].mkv'" >> list.txt
-  ffmpeg -y -f concat -i list.txt -vcodec copy -acodec copy -c copy series/out_$i.mkv
+  ffmpeg -y -f concat -i list.txt -vcodec copy -acodec copy -c copy series/outre_$i.mkv
   rm -rf list.txt
+done
+mv series/out_0.mkv series/outre_0.mkv
+
+echo "Cleaning up.. "
+for i in {0..13};
+do
+  rm -rf series/out_$i.mkv
 done
