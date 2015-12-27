@@ -16,7 +16,8 @@ done
 
 
 mkdir recap/
-for i in {0..13};
+# Computing from the 2nd episode
+for i in {1..13};
 do
   for j in {0..6};
   do
@@ -24,7 +25,7 @@ do
 
     # Take from an already existing file, if we have input
     # Else randomize
-    ffmpeg -i vid1.mkv -vcodec copy -acodec copy -ss $[]:$[]:00 -t 00:00:05 recap/out_$j.mkv
+    ffmpeg -i series/out_$[ i-1 ] -vcodec copy -acodec copy -ss $[]:$[]:00 -t 00:00:05 recap/out_$j.mkv
 
   done
 done
