@@ -10,7 +10,7 @@ do
     then echo "Already there"
   else
     # Copying twenty minute section and doing the math
-    ffmpeg -i vid1.mkv -vcodec copy -acodec copy -ss $[ i/3 ]:$[ (i*20)%60 ]:00 -t 00:20:00 series/out_$i.mkv
+    ffmpeg -y -i bourne2.mkv -vcodec copy -acodec copy -ss $[ i/3 ]:$[ (i*20)%60 ]:00 -t 00:20:00 series/out_$i.mkv
   fi
 done
 
@@ -19,13 +19,18 @@ mkdir recap/
 # Computing from the 2nd episode
 for i in {1..13};
 do
-  for j in {0..6};
+  touch list.txt
+  rm -rf list.txt
+  for j in {0..3};
   do
     echo "Sampling for recapitulation"
 
     # Take from an already existing file, if we have input
     # Else randomize
-    ffmpeg -i series/out_$[ i-1 ] -vcodec copy -acodec copy -ss $[]:$[]:00 -t 00:00:05 recap/out_$j.mkv
-
+    ffmpeg -y -i series/out_$[ i-1 ].mkv -vcodec copy -acodec copy -ss 00:$[ ( 4 + j * 5 ) ]:00 -t 00:00:15 recap/out_$j.mkv
+    echo "file 'recap/out_$j.mkv'" >> list.txt
   done
+  echo "file 'series/out_$[ i ].mkv'" >> list.txt
+  ffmpeg -y -f concat -i list.txt -vcodec copy -acodec copy -c copy series/out_$i.mkv
+  rm -rf list.txt
 done
