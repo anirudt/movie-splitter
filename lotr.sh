@@ -2,22 +2,22 @@
 echo "Hello"
 mkdir series/
 
-for i in {0..13};
+NUMBER_MINS=`ffprobe -i bourne2.mkv -show_entries format=duration -v quiet -of csv="p=0"`
+NUMBER_MINS=$((${NUMBER_MINS%.*}/60))
+NUMBER_PARTS=$(($NUMBER_MINS/20+1))
+
+for (( i=0; i<$NUMBER_PARTS; i++ ))
 do
   echo "$[ i/3 ]:$[ (i*20)%60 ]:00"
 
-  if [ -e "out_$i.mp4" ]
-    then echo "Already there"
-  else
-    # Copying twenty minute section and doing the math
-    ffmpeg -y -i bourne2.mkv -vcodec copy -acodec copy -ss $[ i/3 ]:$[ (i*20)%60 ]:00 -t 00:20:00 series/out_$i.mkv
-  fi
+  # Copying twenty minute section and doing the math
+  ffmpeg -y -i $1 -vcodec copy -acodec copy -ss $[ i/3 ]:$[ (i*20)%60 ]:00 -t 00:20:00 series/out_$i.mkv
 done
 
 
 mkdir recap/
 # Computing from the 2nd episode
-for i in {1..13};
+for (( i=1; i<$NUMBER_PARTS; i++ ))
 do
   touch list.txt
   rm -rf list.txt
@@ -37,7 +37,7 @@ done
 mv series/out_0.mkv series/outre_0.mkv
 
 echo "Cleaning up.. "
-for i in {0..13};
+for(( i=0; i<$NUMBER_PARTS; i++ ))
 do
   rm -rf series/out_$i.mkv
 done
