@@ -1,8 +1,11 @@
 #! /bin/bash
 echo "Hello"
+echo "Issue initial cleanup"
+make clean
+
 mkdir series/
 
-NUMBER_MINS=`ffprobe -i bourne2.mkv -show_entries format=duration -v quiet -of csv="p=0"`
+NUMBER_MINS=`ffprobe -i $1 -show_entries format=duration -v quiet -of csv="p=0"`
 NUMBER_MINS=$((${NUMBER_MINS%.*}/60))
 NUMBER_PARTS=$(($NUMBER_MINS/20+1))
 
@@ -37,7 +40,7 @@ done
 mv series/out_0.mkv series/outre_0.mkv
 
 echo "Cleaning up.. "
-for(( i=0; i<$NUMBER_PARTS; i++ ))
+for(( i=1; i<$NUMBER_PARTS; i++ ))
 do
   rm -rf series/out_$i.mkv
 done
