@@ -8,5 +8,8 @@ This is your movie splitter, to split movies into 20 minute stretches, and use a
 ##Build Instructions
 ```
 $ chmod +x lotr.sh
-$ ./lotr.sh
+$ ./lotr.sh <moviename.extension>
+
+# For example
+$ ./lotr.sh bourne.mkv
 ```
