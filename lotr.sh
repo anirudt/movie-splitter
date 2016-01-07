@@ -10,9 +10,9 @@ NUMBER_MINS=$((${NUMBER_MINS%.*}/60))
 NUMBER_PARTS=$(($NUMBER_MINS/20+1))
 file=$1
 
-if [[ $1 == *$EXTENSION ]]
+if [[ $1 == *.mkv ]]
 then
-  EXTENSION="$EXTENSION"
+  EXTENSION=".mkv"
 else
   if [[ $1 == *.mp4 ]]
   then
@@ -33,11 +33,12 @@ done
 
 
 mkdir recap/
+mkdir lists/
 # Computing from the 2nd episode
 for (( i=1; i<$NUMBER_PARTS; i++ ))
 do
-  touch list.txt
-  rm -rf list.txt
+  #touch list.txt
+  #rm -rf list.txt
   for j in {0..3};
   do
     echo "Sampling for recapitulation"
@@ -45,11 +46,12 @@ do
     # Take from an already existing file, if we have input
     # Else randomize
     ffmpeg -y -i series/out_$[ i-1 ]$EXTENSION -vcodec copy -acodec copy -ss 00:$[ ( 4 + j * 5 ) ]:00 -t 00:00:15 recap/out_$j$EXTENSION
-    echo "file 'recap/out_$j$EXTENSION'" >> list.txt
+    echo "file 'recap/out_$j$EXTENSION'" >> lists/list$i.txt
   done
-  echo "file 'series/out_$[ i ]$EXTENSION'" >> list.txt
-  ffmpeg -y -f concat -i list.txt -vcodec copy -acodec copy -c copy series/outre_$i$EXTENSION
-  rm -rf list.txt
+  echo "file 'series/out_$[ i ]$EXTENSION'" >> lists/list$i.txt
+  mv lists/list$i.txt list$i.txt
+  ffmpeg -y -f concat -i list$i.txt -vcodec copy -acodec copy -c copy series/outre_$i$EXTENSION
+  #rm -rf list.txt
 done
 mv series/out_0$EXTENSION series/outre_0$EXTENSION
 
